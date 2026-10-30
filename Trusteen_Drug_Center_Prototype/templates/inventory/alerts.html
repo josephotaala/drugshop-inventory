@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Smart alerts | Trusteen{% endblock %}
+{% block heading %}Smart alerts & reorder suggestions{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Smart alerts & reorder suggestions</h2><div class="sub">Low stock, demand coverage and upcoming expiry alerts.</div></div></div>
+<div class="notice">Expiry warning window: {{ settings.expiry_alert_days }} days · Reorder coverage target: {{ settings.reorder_coverage_days }} days.</div>
+<div class="tablewrap"><table><thead><tr><th>Product</th><th>Stock</th><th>Reorder level</th><th>Daily demand</th><th>Expiry</th><th>Suggested reorder</th><th>Alert</th></tr></thead><tbody>
+{% for product in products %}<tr><td>{{ product.name }}</td><td>{{ product.stock_quantity }} {{ product.unit }}</td><td>{{ product.reorder_level }}</td><td>{{ product.average_daily_sales }}</td><td>{{ product.expiry_date|default:"—" }}</td><td>{% if product.stock_quantity < product.average_daily_sales|add:0 %}{{ product.average_daily_sales|add:product.reorder_level }}{% else %}{{ product.reorder_level }}{% endif %}</td><td>{% if product.is_low_stock %}<span class="status warn">Low stock</span>{% endif %}{% if product.expiry_date and product.expiry_date <= expiry_limit %}<span class="status bad">Check expiry</span>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="7" class="empty">No stock or expiry alerts.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

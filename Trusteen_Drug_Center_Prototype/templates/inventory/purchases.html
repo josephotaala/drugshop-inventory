@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Purchases & suppliers | Trusteen{% endblock %}
+{% block heading %}Purchases & suppliers{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Purchases & suppliers</h2><div class="sub">Record deliveries and maintain outstanding supplier balances.</div></div><div><a class="btn secondary" href="{% url 'supplier-create' %}">＋ Add supplier</a> <a class="btn" href="{% url 'purchase-create' %}">＋ Receive stock</a></div></div>
+<div class="two">
+  <section class="card"><h3>Suppliers ({{ suppliers|length }})</h3><div class="tablewrap"><table><thead><tr><th>Supplier</th><th>Phone</th><th>Outstanding</th></tr></thead><tbody>{% for supplier in suppliers %}<tr><td>{{ supplier.name }}</td><td>{{ supplier.phone|default:"—" }}</td><td>UGX {{ supplier.balance|floatformat:0 }}</td></tr>{% empty %}<tr><td colspan="3" class="empty">No suppliers recorded.</td></tr>{% endfor %}</tbody></table></div></section>
+  <section class="card"><h3>Purchase summary</h3><p>Purchase records <strong>{{ purchases|length }}</strong></p><p>Recorded purchases <strong>UGX {{ purchase_total|floatformat:0 }}</strong></p></section>
+</div>
+<h3>Recent purchases</h3><div class="tablewrap"><table><thead><tr><th>Reference</th><th>Date</th><th>Supplier</th><th>Product</th><th>Qty</th><th>Unit cost</th><th>Total</th></tr></thead><tbody>{% for purchase in purchases %}<tr><td>{{ purchase.reference }}</td><td>{{ purchase.received_at }}</td><td>{{ purchase.supplier.name }}</td><td>{{ purchase.product.name }}</td><td>{{ purchase.quantity }}</td><td>UGX {{ purchase.unit_cost|floatformat:0 }}</td><td>UGX {{ purchase.total|floatformat:0 }}</td></tr>{% empty %}<tr><td colspan="7" class="empty">No purchases recorded.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

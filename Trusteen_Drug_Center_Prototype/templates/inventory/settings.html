@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Settings & backup | Trusteen{% endblock %}
+{% block heading %}Settings & data protection{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Settings & data protection</h2><div class="sub">Set shop details and inventory alert thresholds.</div></div></div>
+<div class="two">
+  <section class="card"><h3>Shop settings</h3><form method="post">{% csrf_token %}
+  {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+  <button class="btn">Save settings</button></form></section>
+  <section class="card"><h3>Data management</h3><p>Data is stored in the Django database configured for this installation. Back up the database file and any uploaded media using a secure process.</p>
+    <p><a class="btn secondary" href="{% url 'backup-json' %}">Download JSON backup</a></p>
+    <div class="notice">Before production use: configure a strong secret key, DEBUG=False, HTTPS, a managed database, automated backups, access roles, and appropriate Ugandan privacy and pharmacy regulations. The development server is not for deployment.</div>
+  </section>
+</div>
+{% endblock %}

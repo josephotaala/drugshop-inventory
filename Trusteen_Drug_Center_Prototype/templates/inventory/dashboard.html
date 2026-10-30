@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | {{ shop.shop_name }}{% endblock %}
+{% block heading %}Dashboard overview{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Good day, {{ request.user.get_username }}</h2><div class="sub">{{ today|date:"D, j M Y" }} · Current business overview</div></div><a class="btn" href="{% url 'sale-create' %}">＋ New sale</a></div>
+<div class="grid">
+  <div class="card"><div class="metric-label">Today's sales</div><div class="metric">UGX {{ revenue|floatformat:0 }}</div><div class="metric-note">Completed transactions</div></div>
+  <div class="card"><div class="metric-label">Today's gross profit</div><div class="metric">UGX {{ gross_profit|floatformat:0 }}</div><div class="metric-note">Before operating expenses</div></div>
+  <div class="card"><div class="metric-label">Units in stock</div><div class="metric">{{ stock_units }}</div><div class="metric-note">Across {{ products_count }} products</div></div>
+  <div class="card"><div class="metric-label">Items needing attention</div><div class="metric">{{ alerts_count }}</div><div class="metric-note">{{ low_stock_count }} at or below reorder level</div></div>
+</div>
+<div class="two" style="margin-top:14px">
+  <section class="card"><h3>Priority alerts</h3>
+    {% for product in alerts %}<p><strong>{{ product.name }}</strong> · {{ product.stock_quantity }} {{ product.unit }}{% if product.is_low_stock %} <span class="status warn">Low stock</span>{% endif %}{% if product.expiry_date and product.expiry_date <= expiry_limit %} · <span class="status bad">Expires {{ product.expiry_date }}</span>{% endif %}</p>
+    {% empty %}<p class="empty">No alerts right now.</p>{% endfor %}
+    <a href="{% url 'alerts' %}">View all alerts →</a>
+  </section>
+  <section class="card"><h3>Fast-moving products</h3>
+    {% for product in fast_movers %}<div class="barrow"><span>{{ product.name }}</span><div class="barbg"><div class="barfill" style="width:{% if product.average_daily_sales %}{{ product.average_daily_sales|add:0 }}{% else %}0{% endif %}%"></div></div><strong>{{ product.average_daily_sales }}/day</strong></div>
+    {% empty %}<p class="empty">Add products to see demand indicators.</p>{% endfor %}
+    <p class="metric-note">Demand is based on the manually configured average daily sales.</p>
+  </section>
+</div>
+<section class="card"><h3>Recent transactions</h3><div class="tablewrap"><table><thead><tr><th>Receipt</th><th>Date</th><th>Customer</th><th>Payment</th><th>Total</th><th>Status</th></tr></thead><tbody>
+{% for sale in recent_sales %}<tr><td>{{ sale.receipt_number }}</td><td>{{ sale.sold_at|date:"Y-m-d" }}</td><td>{{ sale.customer_name }}</td><td>{{ sale.payment_method }}</td><td>UGX {{ sale.total|floatformat:0 }}</td><td>{{ sale.status }}</td></tr>{% empty %}<tr><td colspan="6" class="empty">No sales recorded.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

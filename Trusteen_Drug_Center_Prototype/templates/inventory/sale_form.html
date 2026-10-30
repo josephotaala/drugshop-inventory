@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}New sale | Trusteen{% endblock %}
+{% block heading %}New sale / POS{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>New sale / point of sale</h2><div class="sub">Sale submission and stock deduction happen in one database transaction.</div></div><a class="btn secondary" href="{% url 'sales' %}">← Back to sales</a></div>
+<div class="card"><form method="post">{% csrf_token %}
+  {% if form.non_field_errors %}<div class="notice">{{ form.non_field_errors }}</div>{% endif %}
+  {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+  <button class="btn">Complete sale</button>
+</form></div>
+{% endblock %}

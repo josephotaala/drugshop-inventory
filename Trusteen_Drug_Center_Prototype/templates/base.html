@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Trusteen Drug Center{% endblock %}</title>
+  <style>
+    :root{--navy:#17324d;--blue:#245b83;--teal:#168579;--bg:#f4f7fa;--line:#dce4eb;--ink:#1e2c39;--muted:#667788;--green:#18794e;--red:#a93333;--amber:#9b6500}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px "Segoe UI",Arial,sans-serif}
+    a{color:var(--blue);text-decoration:none}.layout{display:flex;min-height:100vh}.sidebar{width:238px;flex-shrink:0;background:var(--navy);color:white;padding:20px 14px}
+    .brand{padding:0 10px 20px;border-bottom:1px solid #ffffff2b}.brand strong{display:block;font-size:19px;letter-spacing:.5px}.brand small{color:#d0deea}
+    nav{display:grid;gap:4px;margin-top:16px}nav a{padding:10px 12px;border-radius:8px;color:#dce8f1}nav a:hover,nav a.active{background:#ffffff20;color:white}
+    .main{flex:1;min-width:0}.topbar{position:sticky;top:0;z-index:2;background:white;border-bottom:1px solid var(--line);padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+    .topbar h1{font-size:19px;margin:0}.userbox{display:flex;align-items:center;gap:12px;color:var(--muted)}.content{max-width:1450px;padding:24px;margin:auto}
+    .pagehead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}.pagehead h2{margin:0 0 4px;font-size:23px}
+    .sub,.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .card{background:white;border:1px solid var(--line);border-radius:12px;padding:17px;margin-bottom:14px}.card h3{margin:0 0 13px;font-size:16px}.metric-label{color:var(--muted)}.metric{font-size:25px;font-weight:700;margin:8px 0}.metric-note{font-size:12px;color:var(--muted)}
+    .tablewrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:11px;margin-bottom:14px}table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid #edf1f4}th{background:#f8fafc;color:#596a79;text-transform:uppercase;font-size:11px;letter-spacing:.4px}tr:last-child td{border-bottom:0}
+    .btn{display:inline-block;background:var(--blue);color:white;border:0;border-radius:7px;padding:9px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}.btn:hover{filter:brightness(.93)}.btn.secondary{background:#e7eef4;color:var(--navy)}.btn.danger{background:var(--red)}.btn.small{padding:6px 9px;font-size:12px}
+    .input{width:100%;padding:10px;border:1px solid #ccd7e0;border-radius:7px;background:white;font:inherit}.field{margin-bottom:13px}.field label{display:block;margin-bottom:5px;font-weight:600;font-size:12px;color:#526373}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}.form-actions{display:flex;gap:8px;align-items:center;margin-top:14px}.errorlist{color:#a62c2c;margin:5px 0;padding-left:18px}.card input,.card select,.card textarea{font:inherit;padding:10px;border:1px solid #ccd7e0;border-radius:7px}.card input:not([type=hidden]),.card select,.card textarea{width:100%}
+    .notice{padding:11px 13px;border:1px solid #f0d99f;background:#fff8e5;border-radius:9px;margin-bottom:13px;color:#765000}.messages{list-style:none;padding:0}.messages li{padding:11px;border-radius:8px;margin-bottom:8px;background:#edfaf2;color:#17633f}.messages li.error{background:#fde8e8;color:#a62c2c}
+    .status{font-size:11px;font-weight:700;border-radius:20px;padding:5px 8px;display:inline-block;background:#e9f6ef;color:var(--green)}.status.warn{background:#fff3d8;color:#8c5c00}.status.bad{background:#fde8e8;color:#a62c2c}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}.toolbar .input{max-width:300px}
+    .barrow{display:grid;grid-template-columns:150px 1fr 100px;gap:10px;align-items:center;margin:10px 0;font-size:12px}.barbg{height:9px;background:#e9eff4;border-radius:20px;overflow:hidden}.barfill{height:100%;background:var(--teal);border-radius:20px}.empty{text-align:center;padding:24px;color:var(--muted)}
+    @media(max-width:950px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar{width:205px}}
+    @media(max-width:680px){.layout{display:block}.sidebar{width:100%;padding:12px}.brand{padding:4px 8px 10px}nav{display:flex;overflow:auto;margin-top:8px}nav a{white-space:nowrap;padding:9px}.topbar{padding:12px}.content{padding:13px}.grid,.two,.formgrid{grid-template-columns:1fr}.topbar h1{font-size:16px}.userbox .muted{display:none}}
+    @media print{.sidebar,.topbar,.toolbar,.pagehead .btn,.form-actions{display:none!important}.content{padding:0}.card,.tablewrap{break-inside:avoid}.layout{display:block}body{background:white}}
+  </style>
+</head>
+<body>
+{% if request.user.is_authenticated %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><strong>TRUSTEEN</strong><small>Drug Center · Inventory</small></div>
+    <nav>
+      <a href="{% url 'dashboard' %}">▦ &nbsp; Dashboard</a>
+      <a href="{% url 'products' %}">▣ &nbsp; Products & stock</a>
+      <a href="{% url 'sales' %}">▤ &nbsp; Sales / POS</a>
+      <a href="{% url 'purchases' %}">⇧ &nbsp; Purchases & suppliers</a>
+      <a href="{% url 'customers' %}">♙ &nbsp; Customers & credit</a>
+      <a href="{% url 'alerts' %}">⚠ &nbsp; Smart alerts</a>
+      <a href="{% url 'reports' %}">▥ &nbsp; Reports & profit</a>
+      <a href="{% url 'expenses' %}">− &nbsp; Expenses</a>
+      <a href="{% url 'audit' %}">◷ &nbsp; Audit trail</a>
+      <a href="{% url 'settings' %}">⚙ &nbsp; Settings & backup</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <header class="topbar"><h1>{% block heading %}Trusteen Drug Center{% endblock %}</h1>
+      <div class="userbox"><span class="muted">{{ request.user.get_username }}</span>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn secondary small">Sign out</button></form>
+      </div>
+    </header>
+    <div class="content">
+      {% if messages %}<ul class="messages">{% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}</ul>{% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% else %}
+<main class="content">{% if messages %}<ul class="messages">{% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}</ul>{% endif %}{% block public_content %}{% endblock %}</main>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Reports | Trusteen{% endblock %}
+{% block heading %}Reports & profitability{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Reports & profitability</h2><div class="sub">Business performance, stock valuation and product margins.</div></div><a class="btn secondary" href="{% url 'sales-export' %}">Export sales CSV</a></div>
+<div class="grid">
+  <div class="card"><div class="metric-label">Today revenue</div><div class="metric">UGX {{ today_revenue|floatformat:0 }}</div></div>
+  <div class="card"><div class="metric-label">Today gross profit</div><div class="metric">UGX {{ today_gross|floatformat:0 }}</div></div>
+  <div class="card"><div class="metric-label">Today expenses</div><div class="metric">UGX {{ today_expenses|floatformat:0 }}</div></div>
+  <div class="card"><div class="metric-label">Estimated today net</div><div class="metric">UGX {{ today_net|floatformat:0 }}</div></div>
+</div>
+<div class="two">
+<section class="card"><h3>Sales by payment method</h3>{% for method,total in payment_totals.items %}<p>{{ method }} <strong style="float:right">UGX {{ total|floatformat:0 }}</strong></p>{% endfor %}</section>
+<section class="card"><h3>Business snapshot</h3><p>Stock at recorded cost <strong>UGX {{ stock_value|floatformat:0 }}</strong></p><p>All-time gross profit <strong>UGX {{ all_gross|floatformat:0 }}</strong></p><p>All-time expenses <strong>UGX {{ expenses_total|floatformat:0 }}</strong></p><p>Estimated net contribution <strong>UGX {{ all_net|floatformat:0 }}</strong></p></section>
+</div>
+<section class="card"><h3>Product profitability</h3><div class="tablewrap"><table><thead><tr><th>Product</th><th>Units sold</th><th>Revenue</th><th>Estimated cost</th><th>Gross profit</th></tr></thead><tbody>{% for row in product_profit %}<tr><td>{{ row.product.name }}</td><td>{{ row.units }}</td><td>UGX {{ row.revenue|floatformat:0 }}</td><td>UGX {{ row.cost|floatformat:0 }}</td><td>UGX {{ row.profit|floatformat:0 }}</td></tr>{% empty %}<tr><td colspan="5" class="empty">No products recorded.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

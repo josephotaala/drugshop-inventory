@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Trusteen{% endblock %}
+{% block heading %}{{ title }}{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>{{ title }}</h2></div>{% if back_args %}<a class="btn secondary" href="{% url back_url back_args.0 %}">← Back</a>{% else %}<a class="btn secondary" href="{% url back_url %}">← Back</a>{% endif %}</div>
+<div class="card"><form method="post">{% csrf_token %}
+  {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+  <div class="formgrid">{% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="metric-note">{{ field.help_text }}</div>{% endif %}{{ field.errors }}</div>{% endfor %}</div>
+  <div class="form-actions"><button class="btn">Save</button>{% if back_args %}<a class="btn secondary" href="{% url back_url back_args.0 %}">Cancel</a>{% else %}<a class="btn secondary" href="{% url back_url %}">Cancel</a>{% endif %}</div>
+</form></div>
+{% endblock %}

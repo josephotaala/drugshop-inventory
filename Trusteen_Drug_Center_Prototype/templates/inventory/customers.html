@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Customers & credit | Trusteen{% endblock %}
+{% block heading %}Customers & credit accounts{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Customers & credit accounts</h2><div class="sub">Create separate customer accounts to track orders, receipts, and outstanding balances.</div></div><a class="btn" href="{% url 'customer-create' %}">＋ Create customer account</a></div>
+<div class="tablewrap"><table><thead><tr><th>Account</th><th>Customer</th><th>Phone</th><th>Outstanding balance</th><th>Sales</th><th>Actions</th></tr></thead><tbody>
+{% for customer in customers %}<tr><td>{{ customer.account_number }}</td><td><strong>{{ customer.name }}</strong></td><td>{{ customer.phone|default:"—" }}</td><td>UGX {{ customer.balance|floatformat:0 }}</td><td>{{ customer.sale_count }}</td><td><a class="btn secondary small" href="{% url 'customer-detail' customer.pk %}">View account</a> {% if customer.balance > 0 %}<a class="btn small" href="{% url 'customer-repay' customer.pk %}">Record payment</a>{% endif %}</td></tr>{% empty %}<tr><td colspan="6" class="empty">No customer accounts yet. Create an account for each customer.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

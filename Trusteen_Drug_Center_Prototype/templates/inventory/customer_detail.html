@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ customer.account_number }} | Customer account{% endblock %}
+{% block heading %}Customer account{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <div><h2>{{ customer.name }}</h2><div class="sub">{{ customer.account_number }} · {{ customer.phone|default:"No phone recorded" }}</div></div>
+  <div><a class="btn secondary" href="{% url 'customers' %}">← Customer accounts</a> <a class="btn" href="{% url 'customer-edit' customer.pk %}">Edit account</a>
+  {% if customer.balance > 0 %}<a class="btn" href="{% url 'customer-repay' customer.pk %}">Record payment</a>{% endif %}</div>
+</div>
+<div class="grid">
+  <div class="card"><div class="metric-label">Outstanding balance</div><div class="metric">UGX {{ customer.balance|floatformat:0 }}</div></div>
+  <div class="card"><div class="metric-label">Orders</div><div class="metric">{{ sales|length }}</div></div>
+  <div class="card"><div class="metric-label">Contact</div><div class="metric">{{ customer.phone|default:"—" }}</div></div>
+  <div class="card"><div class="metric-label">Account number</div><div class="metric">{{ customer.account_number }}</div></div>
+</div>
+{% if customer.notes %}<section class="card"><h3>Notes</h3><p>{{ customer.notes|linebreaksbr }}</p></section>{% endif %}
+<section class="card"><h3>Order history</h3>
+  <div class="tablewrap"><table><thead><tr><th>Receipt</th><th>Date</th><th>Payment</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+  {% for sale in sales %}<tr><td>{{ sale.receipt_number }}</td><td>{{ sale.sold_at|date:"Y-m-d H:i" }}</td><td>{{ sale.payment_method }}</td><td>UGX {{ sale.total|floatformat:0 }}</td><td>{{ sale.status }}</td><td><a class="btn secondary small" href="{% url 'sale-receipt' sale.pk %}">Receipt</a></td></tr>
+  {% empty %}<tr><td colspan="6" class="empty">No orders on this account yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+<section class="card"><h3>Payments received</h3>
+  <div class="tablewrap"><table><thead><tr><th>Date</th><th>Method</th><th>Reference</th><th>Received</th></tr></thead><tbody>
+  {% for payment in payments %}<tr><td>{{ payment.received_at|date:"Y-m-d H:i" }}</td><td>{{ payment.method }}</td><td>{{ payment.reference|default:"—" }}</td><td>UGX {{ payment.amount|floatformat:0 }}</td></tr>
+  {% empty %}<tr><td colspan="4" class="empty">No repayments recorded.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

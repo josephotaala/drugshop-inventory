@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Receipt {{ sale.receipt_number }} | {{ shop.shop_name }}{% endblock %}
+{% block heading %}Customer receipt{% endblock %}
+{% block content %}
+<style>
+  .receipt{max-width:720px;margin:0 auto;background:white;border:1px solid var(--line);border-radius:12px;padding:28px}
+  .receipt-head{text-align:center;border-bottom:1px dashed #9aa8b5;padding-bottom:18px;margin-bottom:16px}
+  .receipt-head h2{margin:0 0 5px}.receipt-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+  .receipt-total{margin-left:auto;width:min(320px,100%);text-align:right}.receipt-total p{display:flex;justify-content:space-between;margin:9px 0}
+  .receipt-actions{max-width:720px;margin:14px auto;display:flex;justify-content:space-between;gap:8px}
+  @media print{body{background:white}.sidebar,.topbar,.messages,.receipt-actions{display:none!important}.content{max-width:none;padding:0}.receipt{max-width:none;border:0;border-radius:0;padding:0}.receipt-head{padding-top:0}}
+  @media(max-width:600px){.receipt{padding:16px}.receipt-meta{grid-template-columns:1fr}}
+</style>
+<div class="receipt-actions">
+  <a class="btn secondary" href="{% if sale.customer_id %}{% url 'customer-detail' sale.customer_id %}{% else %}{% url 'sales' %}{% endif %}">← Back</a>
+  <button class="btn" type="button" onclick="window.print()">Print customer receipt</button>
+</div>
+<article class="receipt">
+  <header class="receipt-head">
+    <h2>{{ shop.shop_name }}</h2>
+    <div>Sales receipt</div>
+    {% if sale.status == "Voided" %}<p><span class="status bad">VOIDED</span></p>{% endif %}
+  </header>
+  <div class="receipt-meta">
+    <div><strong>Receipt:</strong> {{ sale.receipt_number }}</div>
+    <div><strong>Date:</strong> {{ sale.sold_at|date:"d M Y, H:i" }}</div>
+    <div><strong>Customer:</strong> {{ sale.customer_name }}</div>
+    {% if sale.customer %}<div><strong>Account:</strong> {{ sale.customer.account_number }}</div>{% endif %}
+    <div><strong>Payment:</strong> {{ sale.payment_method }}</div>
+    <div><strong>Served by:</strong> {{ sale.created_by|default:"Staff" }}</div>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Item</th><th>Qty</th><th>Unit price</th><th>Amount</th></tr></thead>
+    <tbody>{% for item in sale.items.all %}<tr><td>{{ item.product_name }}</td><td>{{ item.quantity }}</td><td>UGX {{ item.unit_price|floatformat:0 }}</td><td>UGX {{ item.line_total|floatformat:0 }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+  <div class="receipt-total">
+    <p><span>Subtotal</span><strong>UGX {{ sale.subtotal|floatformat:0 }}</strong></p>
+    {% if sale.discount %}<p><span>Discount</span><strong>- UGX {{ sale.discount|floatformat:0 }}</strong></p>{% endif %}
+    <p><span>Total</span><strong>UGX {{ sale.total|floatformat:0 }}</strong></p>
+  </div>
+  <footer class="receipt-head" style="border-top:1px dashed #9aa8b5;border-bottom:0;margin:20px 0 0;padding:16px 0 0">
+    Thank you for choosing {{ shop.shop_name }}.
+  </footer>
+</article>
+{% endblock %}

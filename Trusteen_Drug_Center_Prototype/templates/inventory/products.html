@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Products & stock | Trusteen{% endblock %}
+{% block heading %}Products & stock{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Products & stock</h2><div class="sub">Manage prices, quantities, batches and expiry dates.</div></div><a class="btn" href="{% url 'product-create' %}">＋ Add product</a></div>
+<form class="toolbar" method="get"><input class="input" name="q" value="{{ query }}" placeholder="Search name, barcode or category"><button class="btn secondary">Search</button></form>
+<div class="tablewrap"><table><thead><tr><th>Product</th><th>Barcode</th><th>Category</th><th>Qty</th><th>Unit</th><th>Cost</th><th>Price</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for product in products %}<tr><td><strong>{{ product.name }}</strong><div class="metric-note">{{ product.batch_number|default:"No batch" }}</div></td><td>{{ product.barcode|default:"—" }}</td><td>{{ product.category }}</td><td>{{ product.stock_quantity }}</td><td>{{ product.unit }}</td><td>UGX {{ product.unit_cost|floatformat:0 }}</td><td>UGX {{ product.selling_price|floatformat:0 }}</td><td>{{ product.expiry_date|default:"—" }}</td><td>{% if product.expiry_date and product.expiry_date < today %}<span class="status bad">Expired</span>{% elif product.is_low_stock %}<span class="status warn">Low stock</span>{% elif product.expiry_date and product.expiry_date <= expiry_limit %}<span class="status warn">Near expiry</span>{% else %}<span class="status">In stock</span>{% endif %}</td><td><a class="btn secondary small" href="{% url 'product-edit' product.pk %}">Edit</a> <a class="btn small" href="{% url 'stock-adjust' product.pk %}">Adjust</a></td></tr>
+{% empty %}<tr><td colspan="10" class="empty">No products yet. Add the first product to begin.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Sign in | Trusteen Drug Center{% endblock %}
+{% block public_content %}
+<div style="max-width:420px;margin:8vh auto">
+  <div class="card">
+    <h2 style="margin-top:0">Trusteen Drug Center</h2>
+    <p class="muted">Sign in to manage your inventory.</p>
+    {% if form.errors %}<div class="notice">Username or password is incorrect. Please try again.</div>{% endif %}
+    <form method="post">{% csrf_token %}
+      {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}{{ field.errors }}{% endif %}</div>{% endfor %}
+      <button class="btn">Sign in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

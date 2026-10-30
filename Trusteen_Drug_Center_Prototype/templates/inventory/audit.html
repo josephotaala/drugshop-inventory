@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Audit trail | Trusteen{% endblock %}
+{% block heading %}Audit trail{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Audit trail</h2><div class="sub">Recent server-side actions for accountability.</div></div></div>
+<div class="tablewrap"><table><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead><tbody>{% for entry in entries %}<tr><td>{{ entry.created_at|date:"Y-m-d H:i:s" }}</td><td>{{ entry.user|default:"System" }}</td><td>{{ entry.action }}</td><td>{{ entry.details }}</td></tr>{% empty %}<tr><td colspan="4" class="empty">No audit entries yet.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

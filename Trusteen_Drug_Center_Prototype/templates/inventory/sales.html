@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Sales / POS | Trusteen{% endblock %}
+{% block heading %}Sales & point of sale{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Sales & point of sale</h2><div class="sub">Completed and voided receipts with stock history.</div></div><a class="btn" href="{% url 'sale-create' %}">＋ New sale</a></div>
+<form class="toolbar" method="get"><input class="input" name="q" value="{{ query }}" placeholder="Search receipt or customer"><button class="btn secondary">Search</button><a class="btn secondary" href="{% url 'sales-export' %}">Export CSV</a></form>
+<div class="tablewrap"><table><thead><tr><th>Receipt</th><th>Date</th><th>Customer</th><th>Payment</th><th>Items</th><th>Total</th><th>Gross profit</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for sale in sales %}<tr><td><a href="{% url 'sale-receipt' sale.pk %}"><strong>{{ sale.receipt_number }}</strong></a></td><td>{{ sale.sold_at|date:"Y-m-d H:i" }}</td><td>{{ sale.customer_name }}</td><td>{{ sale.payment_method }}</td><td>{{ sale.items.count }}</td><td>UGX {{ sale.total|floatformat:0 }}</td><td>UGX {{ sale.gross_profit|floatformat:0 }}</td><td>{% if sale.status == "Voided" %}<span class="status bad">Voided</span>{% else %}<span class="status">Completed</span>{% endif %}</td><td><a class="btn secondary small" href="{% url 'sale-receipt' sale.pk %}">Print receipt</a> {% if sale.status == "Completed" %}<form method="post" action="{% url 'sale-void' sale.pk %}" onsubmit="return confirm('Void this sale and restore stock?')">{% csrf_token %}<button class="btn danger small">Void</button></form>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="9" class="empty">No sales recorded.</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="metric-note">Payment provider integrations are not connected; mobile money is recorded as a method only.</p>
+{% endblock %}

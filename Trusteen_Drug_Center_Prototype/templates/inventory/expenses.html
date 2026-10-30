@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Expenses | Trusteen{% endblock %}
+{% block heading %}Operating expenses{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h2>Operating expenses</h2><div class="sub">Record costs used in net profit estimates.</div></div><a class="btn" href="{% url 'expense-create' %}">＋ Add expense</a></div>
+<div class="card"><div class="metric-label">Total recorded expenses</div><div class="metric">UGX {{ total_expenses|floatformat:0 }}</div></div>
+<div class="tablewrap"><table><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th>Recorded by</th></tr></thead><tbody>{% for expense in expenses %}<tr><td>{{ expense.date }}</td><td>{{ expense.category }}</td><td>{{ expense.description }}</td><td>UGX {{ expense.amount|floatformat:0 }}</td><td>{{ expense.recorded_by|default:"—" }}</td></tr>{% empty %}<tr><td colspan="5" class="empty">No expenses recorded.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}
